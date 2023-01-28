@@ -1,0 +1,16 @@
+{
+  "name": "filmy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "SentAnalysisService.js",
+  "scripts": {
+    
+    "start": "nodemon SentAnalysisService.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "type": "module"
+}

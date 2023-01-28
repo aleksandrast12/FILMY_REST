@@ -1,0 +1,129 @@
+<html>
+<head>
+    <title>Index</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: stretch;
+            min-width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle,rgb(35, 73, 105) 0% ,rgb(136, 167, 176) 100%); ;
+        }
+        #GetMovie, #ReviewMovie {
+            display: inline-block;
+            width: 50vw;
+            min-height: 100vw;
+            padding: 15px;
+            
+            flex-grow: 1;
+
+            
+            
+        }
+        #reviewForm, #getForm {
+            display: flex;
+            flex-direction: column;
+           
+        }
+        
+    </style>
+    </head>
+    <body>
+    <div id="GetMovie">
+        <h1>Get Movie</h1>
+        <form id="getForm">
+            <input type="text" name="Title" placeholder="Title"/>
+            <button type="submit">Get Movie</button>
+        </form>
+        <div id="getResult"></div>
+    </div>
+    <div id="ReviewMovie">
+        <h1>Review Movie</h1>
+        <form id="reviewForm">
+            <input type="text" name="Title" placeholder="Title"/>
+            <textarea name="Review" placeholder="Review"></textarea>
+            <button type="submit">Review Movie</button>
+        </form>
+        <div id="reviewResult"></div>
+    </div>
+    <script>
+        function analysis(){
+            var getForm = document.getElementById('getForm');
+            var reviewForm = document.getElementById('reviewForm');
+            var getResult = document.getElementById('getResult');
+            var reviewResult = document.getElementById('reviewResult');
+            getForm.addEventListener('submit', function(e){
+                
+                e.preventDefault();
+                var title = getForm.Title.value;
+                title = title.toLowerCase().replace(/ /g, "");
+                if(title.length === 0){
+                    getResult.innerText = 'Please enter a title';
+                    return;
+                }
+                fetch(`/api/movie/${title}`).then((res) =>{
+                    if(res.ok){
+                        return res.json();
+                    }else if(res.status === 404){
+                        throw new Error('Movie not found');
+                    }else{
+                        throw new Error('Error');
+                    }
+                }).then((data) => {
+                        
+                        getResult.innerHTML = `<h3>${data.Title}</h3>
+                        Director: ${data.Director}<br>
+                        PositiveSentimentReview: ${data.PositiveSentimentReview}<br>
+                        NegativeSentimentReview: ${data.NegativeSentimentReview}<br>`;
+                    
+                }).catch((e)=>{
+                    getResult.innerText = 'Error';
+                });
+                })
+            reviewForm.addEventListener('submit', function(e){
+                e.preventDefault();
+                var title = reviewForm.Title.value;
+                var review = reviewForm.Review.value.trim();
+                title = title.toLowerCase().replace(/ /g, "");
+                if(title.length === 0){
+                    reviewResult.innerText = 'Please enter a title';
+                    return;
+                }else if (review.length === 0){
+                    reviewResult.innerText = 'Please enter a review';
+                    return;
+                }
+                fetch(`/api/movie/${title}/review`,{
+                    method: 'POST',
+                    body : review,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    }
+                }).then((res) =>{
+                    if(res.ok){
+                        return res.text();
+                    }else if(res.status === 404){
+                        throw new Error('Movie not found');
+                    }else{
+                        throw new Error('Error');
+                    }
+                }).then((data) => {
+                        
+                        reviewResult.innerText = `Your review is ${data}`;
+                    
+                }).catch((e)=>{
+                    reviewResult.innerText = 'Error';
+                });
+                })
+            }
+
+        
+    
+        document.addEventListener('DOMContentLoaded', analysis);
+      
+    </script>
+    </body>
+</html>
