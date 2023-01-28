@@ -5,7 +5,7 @@
   "main": "SentAnalysisService.js",
   "scripts": {
     
-    "start": "nodemon SentAnalysisService.js"
+    "start": "node SentAnalysisService.js"
   },
   "author": "",
   "license": "ISC",
