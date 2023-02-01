@@ -1,6 +1,6 @@
 import Movie from "./Movie.js";
 export default class MovieBase {
-    static positiveWords = [
+    static positiveWords = [ 
         "dobry",
         "fajny",
         "ladny",
